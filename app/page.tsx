@@ -50,8 +50,7 @@ export default function WhatIfHub() {
       const scenarios = [
         "You'd be sitting on a superyacht right now, aggressively providing concentrated liquidity on Meteora while paying someone a full-time salary just to refresh your DexScreener charts.",
         "You'd have enough capital to single-handedly sweep the floor of your favorite NFT collection, accidentally trigger a bull run, and get interviewed by Bloomberg as a 'visionary investor.'",
-        "Instead of agonizing over the price of groceries, you would be negotiating the purchase of a mid-sized European castle just so you could host exclusive LAN parties for your Discord friends.",
-        "You wouldn't be reading this. You'd be funding a black-ops team of rogue developers to build a custom MEV bot that purely extracts value from your enemies."
+        "Instead of agonizing over the price of groceries, you would be negotiating the purchase of a mid-sized European castle just so you could host exclusive LAN parties for your Discord friends."
       ];
       const random = scenarios[Math.floor(Math.random() * scenarios.length)];
       setResult(`/what_if I didn't sell my ${amount} ${token} early? ${random}`);
@@ -66,8 +65,6 @@ export default function WhatIfHub() {
             <option value="/what_if">/what_if</option>
             <option value="SOL">SOL</option>
             <option value="BTC">BTC</option>
-            <option value="$PROMPT">$PROMPT</option>
-            <option value="$WET">$WET</option>
           </select>
         </div>
         <button onClick={calculate} className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-3 rounded-lg transition">Calculate Regret</button>
@@ -88,28 +85,18 @@ export default function WhatIfHub() {
 
     const generate = () => {
       const excuses = {
-        Work: [
-          "/what_if my rescue cat somehow gained access to my Phantom wallet, bridged all my tokens to a forgotten Layer 2, and I am currently in a sweaty Discord call trying to reverse-engineer the smart contract?",
-          "/what_if my hardware wallet got swallowed by a rogue Roomba, and I have spent the last three hours chasing it down the street with a broom?"
-        ],
-        Date: [
-          "/what_if a dev just rugged the liquidity pool, and instead of leaving the house, I am obsessively tracking their wallet movements like a financially ruined detective?",
-          "/what_if I accidentally paid for my morning coffee in Bitcoin, and the barista is legally forcing me to sit in the cafe for the next 45 minutes until the block confirms?"
-        ],
-        Family: [
-          "/what_if I am currently trapped in a toxic, multi-hour debate on X Spaces about validator RAM requirements, and my digital reputation depends on me winning this argument?",
-          "/what_if I tried to bridge my assets during a network congestion spike, and now they are floating in the digital abyss, forcing me to sit in pure silence and stare at a pending transaction hash?"
-        ]
+        Work: ["/what_if my rescue cat somehow gained access to my Phantom wallet and I am currently in a sweaty Discord call trying to reverse-engineer the smart contract?"],
+        Date: ["/what_if a dev just rugged the liquidity pool, and I am obsessively tracking their wallet movements like a financially ruined detective?"],
+        Family: ["/what_if I am currently trapped in a toxic, multi-hour debate on X Spaces about validator RAM requirements?"]
       };
       // @ts-ignore
-      const options = excuses[obligation];
-      const randomExcuse = options[Math.floor(Math.random() * options.length)];
+      const randomExcuse = excuses[obligation][0];
       setExcuse(`I can't make it to ${obligation.toLowerCase()} today. ${randomExcuse}`);
     };
 
     return (
       <div className="space-y-4 animate-in fade-in duration-300">
-        <h2 className="text-xl font-bold text-blue-400">The Unhinged Excuse Generator</h2>
+        <h2 className="text-xl font-bold text-blue-400">Unhinged Excuse Generator</h2>
         <select value={obligation} onChange={(e) => setObligation(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-blue-500">
           <option value="Work">Work Meeting</option>
           <option value="Date">Tinder Date</option>
@@ -140,7 +127,7 @@ export default function WhatIfHub() {
     return (
       <div className="space-y-4 animate-in fade-in duration-300">
         <h2 className="text-xl font-bold text-purple-400">Web3 Shower Thoughts</h2>
-        <textarea placeholder="e.g. my hardware wallet is just a glorified flash drive and I actually forgot the seed phrase in 2021..." value={thought} onChange={(e) => setThought(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white h-32 focus:outline-none focus:border-purple-500" />
+        <textarea placeholder="e.g. my hardware wallet is just a glorified flash drive..." value={thought} onChange={(e) => setThought(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white h-32 focus:outline-none focus:border-purple-500" />
         <button onClick={postThought} className="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3 rounded-lg transition">Scream into the Void</button>
         {posted && (
           <div className="mt-4 space-y-2">
@@ -159,13 +146,7 @@ export default function WhatIfHub() {
 
     const predict = () => {
       if (!question) return;
-      const predictions = [
-        "you accidentally trigger a massive liquidation cascade, causing the entire network to restart, but you walk away with enough profit to buy a sovereign island?",
-        "it creates a butterfly effect where you end up losing your primary seed phrase, but finding true inner peace while living completely off the grid in the mountains?",
-        "you make the right call, become a billionaire overnight, but are cursed to only ever communicate using obscure crypto acronyms for the rest of your life?"
-      ];
-      const random = predictions[Math.floor(Math.random() * predictions.length)];
-      setPrediction(`You asked: "${question}" \n\nOracle says: /what_if ${random}`);
+      setPrediction(`You asked: "${question}" \n\nOracle says: /what_if you accidentally trigger a massive liquidation cascade, causing the entire network to restart?`);
     };
 
     return (
@@ -179,6 +160,50 @@ export default function WhatIfHub() {
             <ActionButtons text={prediction} />
           </div>
         )}
+      </div>
+    );
+  };
+
+  // --- App 5: Meme Generator ---
+  const MemeGenerator = () => {
+    const [topText, setTopText] = useState('/WHAT_IF');
+    const [bottomText, setBottomText] = useState('I JUST HELD?');
+    const [imageUrl, setImageUrl] = useState('');
+
+    // Default Unsplash Cat Image
+    const displayImage = imageUrl || "https://images.unsplash.com/photo-1529778458719-9d6ef1629471?w=600&q=80";
+
+    const textStyle = {
+      textShadow: '2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 0 2px 0 #000, 2px 0 0 #000, 0 -2px 0 #000, -2px 0 0 #000',
+      fontFamily: 'Impact, sans-serif'
+    };
+
+    const memeText = `${topText} ... ${bottomText}`;
+
+    return (
+      <div className="space-y-4 animate-in fade-in duration-300">
+        <h2 className="text-xl font-bold text-pink-400">Meme Generator</h2>
+        
+        <div className="space-y-2">
+          <input type="text" placeholder="Top Text" maxLength={30} value={topText} onChange={(e) => setTopText(e.target.value.toUpperCase())} className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-pink-500 uppercase" />
+          <input type="text" placeholder="Bottom Text" maxLength={30} value={bottomText} onChange={(e) => setBottomText(e.target.value.toUpperCase())} className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-pink-500 uppercase" />
+          <input type="text" placeholder="Custom Image URL (optional)" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-pink-500 text-sm" />
+        </div>
+
+        {/* Visual Meme Preview */}
+        <div className="relative w-full aspect-square bg-gray-950 rounded-lg overflow-hidden flex flex-col items-center justify-between py-6 border border-gray-700 shadow-inner group">
+          <img src={displayImage} alt="Meme Background" className="absolute inset-0 w-full h-full object-cover z-0 opacity-90 group-hover:opacity-100 transition-opacity" />
+          
+          <h3 className="relative z-10 text-3xl md:text-5xl font-black text-white text-center px-4 w-full break-words tracking-wide leading-tight" style={textStyle}>
+            {topText}
+          </h3>
+          <h3 className="relative z-10 text-3xl md:text-5xl font-black text-white text-center px-4 w-full break-words tracking-wide leading-tight" style={textStyle}>
+            {bottomText}
+          </h3>
+        </div>
+
+        <p className="text-xs text-center text-gray-500 italic">Screenshot the image above, or use the buttons below to share the text!</p>
+        <ActionButtons text={memeText} />
       </div>
     );
   };
@@ -198,18 +223,20 @@ export default function WhatIfHub() {
           </div>
         </div>
 
-        {/* Navigation Tabs */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-2 mb-6">
-          <button onClick={() => setActiveTab('calculator')} className={`p-3 rounded-lg text-sm font-bold transition-colors ${activeTab === 'calculator' ? 'bg-emerald-600 text-white shadow-lg shadow-emerald-500/20' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>Regret Calc</button>
-          <button onClick={() => setActiveTab('excuse')} className={`p-3 rounded-lg text-sm font-bold transition-colors ${activeTab === 'excuse' ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/20' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>Excuses</button>
-          <button onClick={() => setActiveTab('confession')} className={`p-3 rounded-lg text-sm font-bold transition-colors ${activeTab === 'confession' ? 'bg-purple-600 text-white shadow-lg shadow-purple-500/20' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>Thoughts</button>
-          <button onClick={() => setActiveTab('oracle')} className={`p-3 rounded-lg text-sm font-bold transition-colors ${activeTab === 'oracle' ? 'bg-orange-600 text-white shadow-lg shadow-orange-500/20' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>Oracle</button>
+        {/* Navigation Tabs - Now wraps nicely on mobile */}
+        <div className="flex flex-wrap justify-center gap-2 mb-6">
+          <button onClick={() => setActiveTab('calculator')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors flex-grow ${activeTab === 'calculator' ? 'bg-emerald-600 text-white shadow-lg' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>Regret Calc</button>
+          <button onClick={() => setActiveTab('excuse')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors flex-grow ${activeTab === 'excuse' ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>Excuses</button>
+          <button onClick={() => setActiveTab('meme')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors flex-grow ${activeTab === 'meme' ? 'bg-pink-600 text-white shadow-lg' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>Meme Maker</button>
+          <button onClick={() => setActiveTab('confession')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors flex-grow ${activeTab === 'confession' ? 'bg-purple-600 text-white shadow-lg' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>Thoughts</button>
+          <button onClick={() => setActiveTab('oracle')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors flex-grow ${activeTab === 'oracle' ? 'bg-orange-600 text-white shadow-lg' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>Oracle</button>
         </div>
 
         {/* Active Tab Content */}
         <div className="bg-gray-900 rounded-2xl shadow-2xl p-6 md:p-8 border border-gray-800 min-h-[400px]">
           {activeTab === 'calculator' && <Calculator />}
           {activeTab === 'excuse' && <ExcuseGenerator />}
+          {activeTab === 'meme' && <MemeGenerator />}
           {activeTab === 'confession' && <ConfessionBoard />}
           {activeTab === 'oracle' && <TimelineOracle />}
         </div>
