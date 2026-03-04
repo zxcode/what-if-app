@@ -7,7 +7,8 @@ export default function WhatIfHub() {
 
   // --- Shared X Share Function ---
   const shareToX = (text: string) => {
-    const encodedText = encodeURIComponent(`${text} \n\n🪙 @what_if_sol`);
+    // UPDATED: Tagging @what_if_soI
+    const encodedText = encodeURIComponent(`${text} \n\n🪙 @what_if_soI`);
     window.open(`https://twitter.com/intent/tweet?text=${encodedText}`, '_blank');
   };
 
@@ -16,7 +17,8 @@ export default function WhatIfHub() {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {
-      navigator.clipboard.writeText(`${text} \n\n🪙 @what_if_sol`);
+      // UPDATED: Tagging @what_if_soI
+      navigator.clipboard.writeText(`${text} \n\n🪙 @what_if_soI`);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     };
@@ -247,7 +249,7 @@ export default function WhatIfHub() {
           </div>
         </div>
 
-        {/* Navigation Tabs */}
+        {/* Navigation Tabs - Now wraps nicely on mobile */}
         <div className="flex flex-wrap justify-center gap-2 mb-6">
           <button onClick={() => setActiveTab('calculator')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors flex-grow ${activeTab === 'calculator' ? 'bg-emerald-600 text-white shadow-lg' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>Regret Calc</button>
           <button onClick={() => setActiveTab('excuse')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors flex-grow ${activeTab === 'excuse' ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>Excuses</button>
