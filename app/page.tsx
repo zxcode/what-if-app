@@ -1,13 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
+import html2canvas from 'html2canvas';
 
 export default function WhatIfHub() {
   const [activeTab, setActiveTab] = useState('calculator');
 
   // --- Shared X Share Function ---
   const shareToX = (text: string) => {
-    // UPDATED: Tagging @what_if_soI
     const encodedText = encodeURIComponent(`${text} \n\n🪙 @what_if_soI`);
     window.open(`https://twitter.com/intent/tweet?text=${encodedText}`, '_blank');
   };
@@ -17,7 +17,6 @@ export default function WhatIfHub() {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {
-      // UPDATED: Tagging @what_if_soI
       navigator.clipboard.writeText(`${text} \n\n🪙 @what_if_soI`);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -171,8 +170,8 @@ export default function WhatIfHub() {
     const [topText, setTopText] = useState('/WHAT_IF');
     const [bottomText, setBottomText] = useState('I JUST HELD?');
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
+    const memeRef = useRef<HTMLDivElement>(null); 
 
-    // Read the uploaded file and convert it to a local data URL for preview
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (file) {
@@ -184,7 +183,17 @@ export default function WhatIfHub() {
       }
     };
 
-    // Default Unsplash Cat Image if no image is uploaded
+    const downloadMeme = async () => {
+      if (memeRef.current) {
+        const canvas = await html2canvas(memeRef.current, { useCORS: true, allowTaint: true });
+        const image = canvas.toDataURL("image/png");
+        const link = document.createElement('a');
+        link.href = image;
+        link.download = 'what_if_meme.png';
+        link.click();
+      }
+    };
+
     const displayImage = selectedImage || "https://images.unsplash.com/photo-1529778458719-9d6ef1629471?w=600&q=80";
 
     const textStyle = {
@@ -202,40 +211,31 @@ export default function WhatIfHub() {
           <input type="text" placeholder="Top Text" maxLength={30} value={topText} onChange={(e) => setTopText(e.target.value.toUpperCase())} className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-pink-500 uppercase" />
           <input type="text" placeholder="Bottom Text" maxLength={30} value={bottomText} onChange={(e) => setBottomText(e.target.value.toUpperCase())} className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-pink-500 uppercase" />
           
-          {/* Custom File Upload Button */}
           <div className="relative w-full bg-gray-800 border border-gray-700 rounded-lg p-3 flex justify-center hover:bg-gray-700 transition cursor-pointer group">
             <span className="text-pink-400 font-bold text-sm group-hover:text-pink-300">
               {selectedImage ? "Change Image" : "Upload Image"}
             </span>
-            <input 
-              type="file" 
-              accept="image/*" 
-              onChange={handleImageUpload} 
-              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-            />
+            <input type="file" accept="image/*" onChange={handleImageUpload} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
           </div>
         </div>
 
-        {/* Visual Meme Preview */}
-        <div className="relative w-full aspect-square bg-gray-950 rounded-lg overflow-hidden flex flex-col items-center justify-between py-6 border border-gray-700 shadow-inner group">
-          <img src={displayImage} alt="Meme Background" className="absolute inset-0 w-full h-full object-cover z-0 opacity-90 group-hover:opacity-100 transition-opacity" />
-          
-          <h3 className="relative z-10 text-3xl md:text-5xl font-black text-white text-center px-4 w-full break-words tracking-wide leading-tight" style={textStyle}>
-            {topText}
-          </h3>
-          <h3 className="relative z-10 text-3xl md:text-5xl font-black text-white text-center px-4 w-full break-words tracking-wide leading-tight" style={textStyle}>
-            {bottomText}
-          </h3>
+        <div ref={memeRef} className="relative w-full aspect-square bg-gray-950 rounded-lg overflow-hidden flex flex-col items-center justify-between py-6 border border-gray-700 shadow-inner group">
+          <img src={displayImage} alt="Meme Background" className="absolute inset-0 w-full h-full object-cover z-0 opacity-90 transition-opacity" crossOrigin="anonymous" />
+          <h3 className="relative z-10 text-3xl md:text-5xl font-black text-white text-center px-4 w-full break-words tracking-wide leading-tight uppercase" style={textStyle}>{topText}</h3>
+          <h3 className="relative z-10 text-3xl md:text-5xl font-black text-white text-center px-4 w-full break-words tracking-wide leading-tight uppercase" style={textStyle}>{bottomText}</h3>
         </div>
 
-        <p className="text-xs text-center text-gray-500 italic">Screenshot the image above, or use the buttons below to share the text!</p>
+        <button onClick={downloadMeme} className="w-full bg-pink-600 hover:bg-pink-500 text-white font-bold py-3 rounded-lg transition shadow-lg shadow-pink-500/20">
+          ⬇️ Download Meme Image
+        </button>
+
         <ActionButtons text={memeText} />
       </div>
     );
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-4 font-sans relative">
+    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center py-12 px-4 font-sans relative">
       <div className="max-w-xl w-full">
         {/* Header & Tagline */}
         <div className="text-center mb-8">
@@ -249,7 +249,7 @@ export default function WhatIfHub() {
           </div>
         </div>
 
-        {/* Navigation Tabs - Now wraps nicely on mobile */}
+        {/* Navigation Tabs */}
         <div className="flex flex-wrap justify-center gap-2 mb-6">
           <button onClick={() => setActiveTab('calculator')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors flex-grow ${activeTab === 'calculator' ? 'bg-emerald-600 text-white shadow-lg' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>Regret Calc</button>
           <button onClick={() => setActiveTab('excuse')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors flex-grow ${activeTab === 'excuse' ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>Excuses</button>
@@ -266,6 +266,25 @@ export default function WhatIfHub() {
           {activeTab === 'confession' && <ConfessionBoard />}
           {activeTab === 'oracle' && <TimelineOracle />}
         </div>
+
+        {/* --- LIVE CHART SECTION --- */}
+        <div className="mt-8 bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl p-4 md:p-6">
+          <h2 className="text-lg md:text-xl font-bold text-gray-300 mb-4 flex items-center gap-2">
+            <span className="animate-pulse h-2.5 w-2.5 bg-emerald-500 rounded-full"></span>
+            Live /what_if Chart
+          </h2>
+          <div className="w-full h-[400px] md:h-[500px] rounded-xl overflow-hidden border border-gray-800 bg-gray-950">
+            <iframe 
+              width="100%" 
+              height="100%" 
+              src="https://dexscreener.com/solana/F7A8URtVn5AvXcvKWQVKAtzMBqKVaBF22gxT2NcXpump?embed=1&theme=dark" 
+              frameBorder="0" 
+              title="DexScreener Live Chart"
+              className="w-full h-full"
+            ></iframe>
+          </div>
+        </div>
+
       </div>
     </div>
   );
