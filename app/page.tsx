@@ -18,7 +18,7 @@ export default function WhatIfGameHub() {
     const [playerX, setPlayerX] = useState(50); // percentage 0-100
     const [items, setItems] = useState<{ id: number; x: number; y: number; type: 'token' | 'rug' }[]>([]);
     
-    const requestRef = useRef<number>();
+    const requestRef = useRef<number>(0);
     const lastSpawnRef = useRef<number>(0);
     const speedRef = useRef(0.5); // Initial falling speed
     const frameRef = useRef(0);
