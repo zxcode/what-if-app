@@ -7,7 +7,7 @@ export default function WhatIfHub() {
 
   // --- Shared X Share Function ---
   const shareToX = (text: string) => {
-    const encodedText = encodeURIComponent(`${text} \n\n🪙 @what_if_token`);
+    const encodedText = encodeURIComponent(`${text} \n\n🪙 @what_if_sol`);
     window.open(`https://twitter.com/intent/tweet?text=${encodedText}`, '_blank');
   };
 
@@ -16,7 +16,7 @@ export default function WhatIfHub() {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {
-      navigator.clipboard.writeText(`${text} \n\n🪙 @what_if_token`);
+      navigator.clipboard.writeText(`${text} \n\n🪙 @what_if_sol`);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     };
@@ -168,10 +168,22 @@ export default function WhatIfHub() {
   const MemeGenerator = () => {
     const [topText, setTopText] = useState('/WHAT_IF');
     const [bottomText, setBottomText] = useState('I JUST HELD?');
-    const [imageUrl, setImageUrl] = useState('');
+    const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
-    // Default Unsplash Cat Image
-    const displayImage = imageUrl || "https://images.unsplash.com/photo-1529778458719-9d6ef1629471?w=600&q=80";
+    // Read the uploaded file and convert it to a local data URL for preview
+    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setSelectedImage(reader.result as string);
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+
+    // Default Unsplash Cat Image if no image is uploaded
+    const displayImage = selectedImage || "https://images.unsplash.com/photo-1529778458719-9d6ef1629471?w=600&q=80";
 
     const textStyle = {
       textShadow: '2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 0 2px 0 #000, 2px 0 0 #000, 0 -2px 0 #000, -2px 0 0 #000',
@@ -187,7 +199,19 @@ export default function WhatIfHub() {
         <div className="space-y-2">
           <input type="text" placeholder="Top Text" maxLength={30} value={topText} onChange={(e) => setTopText(e.target.value.toUpperCase())} className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-pink-500 uppercase" />
           <input type="text" placeholder="Bottom Text" maxLength={30} value={bottomText} onChange={(e) => setBottomText(e.target.value.toUpperCase())} className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-pink-500 uppercase" />
-          <input type="text" placeholder="Custom Image URL (optional)" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)} className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-pink-500 text-sm" />
+          
+          {/* Custom File Upload Button */}
+          <div className="relative w-full bg-gray-800 border border-gray-700 rounded-lg p-3 flex justify-center hover:bg-gray-700 transition cursor-pointer group">
+            <span className="text-pink-400 font-bold text-sm group-hover:text-pink-300">
+              {selectedImage ? "Change Image" : "Upload Image"}
+            </span>
+            <input 
+              type="file" 
+              accept="image/*" 
+              onChange={handleImageUpload} 
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            />
+          </div>
         </div>
 
         {/* Visual Meme Preview */}
@@ -223,7 +247,7 @@ export default function WhatIfHub() {
           </div>
         </div>
 
-        {/* Navigation Tabs - Now wraps nicely on mobile */}
+        {/* Navigation Tabs */}
         <div className="flex flex-wrap justify-center gap-2 mb-6">
           <button onClick={() => setActiveTab('calculator')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors flex-grow ${activeTab === 'calculator' ? 'bg-emerald-600 text-white shadow-lg' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>Regret Calc</button>
           <button onClick={() => setActiveTab('excuse')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors flex-grow ${activeTab === 'excuse' ? 'bg-blue-600 text-white shadow-lg' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>Excuses</button>
