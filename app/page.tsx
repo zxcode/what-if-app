@@ -184,12 +184,13 @@ export default function WhatIfHub() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-4 font-sans">
+    <div className="min-h-screen bg-gray-950 text-white flex flex-col items-center justify-center p-4 font-sans relative">
       <div className="max-w-xl w-full">
         {/* Header & Tagline */}
         <div className="text-center mb-8">
           <h1 className="text-4xl md:text-5xl font-extrabold text-white mb-4 tracking-tight">/what_if Hub</h1>
-          <div className="bg-gray-900 border border-gray-700 rounded-xl p-5 shadow-lg">
+          
+          <div className="bg-gray-900 border border-gray-700 rounded-xl p-5 shadow-lg mb-4">
             <p className="text-sm md:text-base text-gray-300 mb-3 uppercase tracking-wider font-bold">Join the chaos. Buy the token.</p>
             <p className="text-xs md:text-sm font-mono text-emerald-400 break-all bg-black p-3 rounded-lg border border-gray-800 shadow-inner">
               CA: F7A8URtVn5AvXcvKWQVKAtzMBqKVaBF22gxT2NcXpump
