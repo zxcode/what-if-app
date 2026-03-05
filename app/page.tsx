@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 import html2canvas from 'html2canvas';
 
 export default function WhatIfHub() {
-  const [activeTab, setActiveTab] = useState('game');
+  const [activeTab, setActiveTab] = useState('album');
 
   // --- Shared X Share Function ---
   const shareToX = (text: string) => {
@@ -159,16 +159,15 @@ export default function WhatIfHub() {
     );
   };
 
-  // --- NEW APP 6: ALBUM COVER PIXELATOR ---
+  // --- APP 6: ALBUM COVER PIXELATOR (UPDATED RESOLUTION) ---
   const AlbumMaker = () => {
     const [title, setTitle] = useState('/WHAT_IF');
     const [artist, setArtist] = useState('THE DEGENS');
-    const [pixelSize, setPixelSize] = useState(12); // Higher number = chunkier pixels
+    const [resolution, setResolution] = useState(120); // Much higher default resolution!
     const [selectedImage, setSelectedImage] = useState<string | null>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const albumRef = useRef<HTMLDivElement>(null);
 
-    // Default Image to process
     const displayImage = selectedImage || "https://images.unsplash.com/photo-1529778458719-9d6ef1629471?w=600&q=80";
 
     const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -180,7 +179,6 @@ export default function WhatIfHub() {
       }
     };
 
-    // The Magic Pixelation Canvas Engine
     useEffect(() => {
       const canvas = canvasRef.current;
       if (!canvas) return;
@@ -188,37 +186,30 @@ export default function WhatIfHub() {
       if (!ctx) return;
 
       const img = new Image();
-      img.crossOrigin = 'anonymous'; // Important for external URLs
+      img.crossOrigin = 'anonymous'; 
       img.src = displayImage;
 
       img.onload = () => {
-        // Force a 500x500 square canvas
         canvas.width = 500;
         canvas.height = 500;
 
-        // Calculate Crop (Center Square)
         const size = Math.min(img.width, img.height);
         const sx = (img.width - size) / 2;
         const sy = (img.height - size) / 2;
 
-        // Create a tiny offscreen canvas to crunch the resolution
         const offscreen = document.createElement('canvas');
-        const chunkiness = Math.max(2, 40 - pixelSize); // Reverse scale for slider UX
-        offscreen.width = chunkiness;
-        offscreen.height = chunkiness;
+        // Now using resolution directly (higher number = smaller, clearer pixels)
+        offscreen.width = resolution;
+        offscreen.height = resolution;
         const offCtx = offscreen.getContext('2d');
         if (!offCtx) return;
 
-        // Draw the image tiny
-        offCtx.drawImage(img, sx, sy, size, size, 0, 0, chunkiness, chunkiness);
+        offCtx.drawImage(img, sx, sy, size, size, 0, 0, resolution, resolution);
 
-        // Turn OFF smoothing so it stays blocky when we scale it back up
         ctx.imageSmoothingEnabled = false;
-        
-        // Draw it back onto the main 500x500 canvas
-        ctx.drawImage(offscreen, 0, 0, chunkiness, chunkiness, 0, 0, 500, 500);
+        ctx.drawImage(offscreen, 0, 0, resolution, resolution, 0, 0, 500, 500);
       };
-    }, [displayImage, pixelSize]);
+    }, [displayImage, resolution]);
 
     const downloadAlbum = async () => {
       if (albumRef.current) {
@@ -240,8 +231,22 @@ export default function WhatIfHub() {
           <input type="text" placeholder="Artist Name" maxLength={25} value={artist} onChange={(e) => setArtist(e.target.value.toUpperCase())} className="w-full bg-gray-800 border border-gray-700 rounded-lg p-3 text-white focus:outline-none focus:border-cyan-500 uppercase" />
           
           <div className="bg-gray-800 border border-gray-700 rounded-lg p-3">
-            <label className="block text-xs text-gray-400 mb-2 font-bold uppercase tracking-wider">Pixel Chunkiness</label>
-            <input type="range" min="5" max="35" value={pixelSize} onChange={(e) => setPixelSize(Number(e.target.value))} className="w-full accent-cyan-500" />
+            <label className="block text-xs text-gray-400 mb-2 font-bold uppercase tracking-wider flex justify-between">
+              <span>Image Resolution</span>
+              <span className="text-cyan-500">{resolution}px</span>
+            </label>
+            <input 
+              type="range" 
+              min="20" 
+              max="300" 
+              value={resolution} 
+              onChange={(e) => setResolution(Number(e.target.value))} 
+              className="w-full accent-cyan-500" 
+            />
+            <div className="flex justify-between text-[10px] text-gray-500 mt-1 uppercase font-bold">
+              <span>Chunky</span>
+              <span>Clear</span>
+            </div>
           </div>
 
           <div className="relative w-full bg-gray-800 border border-gray-700 rounded-lg p-3 flex justify-center hover:bg-gray-700 transition cursor-pointer group">
@@ -250,21 +255,16 @@ export default function WhatIfHub() {
           </div>
         </div>
 
-        {/* ALbum Preview Container for Download */}
         <div ref={albumRef} className="relative w-full aspect-square bg-gray-950 rounded-xl overflow-hidden shadow-2xl border-4 border-gray-900 group">
-          {/* The Magic Pixel Canvas */}
           <canvas ref={canvasRef} className="absolute inset-0 w-full h-full object-cover" />
           
-          {/* Dark Overlay for Text Readability */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
 
-          {/* Album Typography */}
           <div className="absolute top-4 left-4 right-4">
             <h3 className="text-3xl md:text-5xl font-black text-white tracking-tighter uppercase drop-shadow-lg leading-none">{title}</h3>
             <p className="text-sm md:text-lg font-bold text-cyan-400 tracking-widest uppercase mt-1 drop-shadow-md">{artist}</p>
           </div>
 
-          {/* Pure CSS Parental Advisory Sticker */}
           <div className="absolute bottom-4 right-4 bg-white text-black font-black p-1.5 border-2 border-black w-24 md:w-28 text-center rotate-[-2deg] shadow-lg">
             <div className="border-b-[3px] border-black text-[9px] md:text-[10px] tracking-[0.2em] leading-none pb-0.5">PARENTAL</div>
             <div className="text-xs md:text-sm tracking-widest leading-none py-1">ADVISORY</div>
@@ -451,7 +451,7 @@ export default function WhatIfHub() {
           </div>
         </div>
 
-        {/* Navigation Tabs - Extended for the Album feature */}
+        {/* Navigation Tabs */}
         <div className="flex flex-wrap justify-center gap-2 mb-6">
           <button onClick={() => setActiveTab('album')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors flex-grow uppercase ${activeTab === 'album' ? 'bg-cyan-600 text-white shadow-lg shadow-cyan-500/20' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>💿 Album Art</button>
           <button onClick={() => setActiveTab('game')} className={`px-4 py-2 rounded-lg text-sm font-bold transition-colors flex-grow uppercase ${activeTab === 'game' ? 'bg-yellow-600 text-white shadow-lg' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`}>🎮 Game</button>
